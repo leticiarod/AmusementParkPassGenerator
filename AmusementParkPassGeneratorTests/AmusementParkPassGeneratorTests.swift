@@ -14,6 +14,8 @@ class AmusementParkPassGeneratorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        var _ = storyboard.instantiateInitialViewController() as! ViewController
     }
     
     override func tearDown() {
@@ -32,5 +34,7 @@ class AmusementParkPassGeneratorTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
+    
+    
     
 }

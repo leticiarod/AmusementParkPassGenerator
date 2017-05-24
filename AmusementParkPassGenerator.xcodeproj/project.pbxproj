@@ -13,6 +13,7 @@
 		977A84361ED2768300CD2818 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 977A84351ED2768300CD2818 /* Assets.xcassets */; };
 		977A84391ED2768300CD2818 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 977A84371ED2768300CD2818 /* LaunchScreen.storyboard */; };
 		977A84441ED2768300CD2818 /* AmusementParkPassGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977A84431ED2768300CD2818 /* AmusementParkPassGeneratorTests.swift */; };
+		977A844F1ED4BABE00CD2818 /* PassGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977A844E1ED4BABE00CD2818 /* PassGenerator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		977A843F1ED2768300CD2818 /* AmusementParkPassGeneratorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmusementParkPassGeneratorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		977A84431ED2768300CD2818 /* AmusementParkPassGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmusementParkPassGeneratorTests.swift; sourceTree = "<group>"; };
 		977A84451ED2768300CD2818 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		977A844E1ED4BABE00CD2818 /* PassGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PassGenerator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				977A84351ED2768300CD2818 /* Assets.xcassets */,
 				977A84371ED2768300CD2818 /* LaunchScreen.storyboard */,
 				977A843A1ED2768300CD2818 /* Info.plist */,
+				977A844E1ED4BABE00CD2818 /* PassGenerator.swift */,
 			);
 			path = AmusementParkPassGenerator;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				977A84311ED2768300CD2818 /* ViewController.swift in Sources */,
+				977A844F1ED4BABE00CD2818 /* PassGenerator.swift in Sources */,
 				977A842F1ED2768300CD2818 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
