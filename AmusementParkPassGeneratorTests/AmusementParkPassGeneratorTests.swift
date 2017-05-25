@@ -54,8 +54,8 @@ class AmusementParkPassGeneratorTests: XCTestCase {
             XCTAssert(employee.dateOfBirth == date)
             XCTAssert(employee.type == EmployeeType.manager)
             
-        } catch {
-        
+        } catch let error {
+            XCTFail("Caught error: \(error)")
         }
     }
     
@@ -76,8 +76,8 @@ class AmusementParkPassGeneratorTests: XCTestCase {
             XCTAssert(guest.dateOfBirth == date)
             XCTAssert(guest.type == GuestType.classic)
             
-        } catch {
-            
+        } catch let error {
+            XCTFail("Caught error: \(error)")
         }
     }
     
@@ -227,8 +227,8 @@ class AmusementParkPassGeneratorTests: XCTestCase {
                 }
             
             
-        } catch {
-            
+            } catch let error {
+                XCTFail("Caught error: \(error)")
         }
             
         }
@@ -254,8 +254,8 @@ class AmusementParkPassGeneratorTests: XCTestCase {
             }
                 
                 
-            } catch {
-                
+            } catch let error {
+                XCTFail("Caught error: \(error)")
             }
             
             
@@ -281,8 +281,8 @@ class AmusementParkPassGeneratorTests: XCTestCase {
                 }
                 
                 
-            } catch {
-                
+            } catch let error {
+                XCTFail("Caught error: \(error)")
             }
             
             
@@ -303,8 +303,8 @@ class AmusementParkPassGeneratorTests: XCTestCase {
                                                 print("Access Denied")
                 }
                 
-            } catch {
-                
+            } catch let error {
+                XCTFail("Caught error: \(error)")
             }
             
             

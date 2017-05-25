@@ -201,37 +201,39 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
         switch type {
         case .foodServices:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
-                if areaAccessArray[0] == AreaAccess.amusementAreas &&
-                    areaAccessArray[1] == AreaAccess.kitchenAreas && rideAccessArray[0] == RideAccess.allRides && discountAccessArray[0] == DiscountAccess.onFood(percentage: 15) && discountAccessArray[1] == DiscountAccess.onMarchandise(percentage: 25){
+                if areaAccessArray.contains(AreaAccess.amusementAreas) || areaAccessArray.contains(AreaAccess.kitchenAreas) || rideAccessArray.contains(RideAccess.allRides) || contains(foodDiscount: 15, marchandiseDiscount: 25, discountAccessArray: discountAccessArray) {
                     return .granted(description: "Granted")
                 }
                 
             }
         case .rideServices:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray = self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
-            if areaAccessArray[0] == AreaAccess.amusementAreas &&
-                                areaAccessArray[1] == AreaAccess.rideControlAreas && rideAccessArray[0] == RideAccess.allRides && discountAccessArray[0] == DiscountAccess.onFood(percentage: 15) && discountAccessArray[1] == DiscountAccess.onMarchandise(percentage: 25){
+                if areaAccessArray.contains(AreaAccess.amusementAreas) ||
+                                areaAccessArray.contains(AreaAccess.rideControlAreas)  || rideAccessArray.contains(RideAccess.allRides) || contains(foodDiscount: 15, marchandiseDiscount: 25, discountAccessArray: discountAccessArray)
+                {
+                    print("discountAccessArray \(discountAccessArray)")
                                     return .granted(description: "Granted")
                 }
                 
             }
         case .maintenance:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
-            if areaAccessArray[0] == AreaAccess.amusementAreas &&
-                areaAccessArray[1] == AreaAccess.kitchenAreas &&
-                areaAccessArray[2] == AreaAccess.rideControlAreas &&
-                areaAccessArray[3] == AreaAccess.maintenanceAreas && rideAccessArray[0] == RideAccess.allRides && discountAccessArray[0] == DiscountAccess.onFood(percentage: 15) && discountAccessArray[1] == DiscountAccess.onMarchandise(percentage: 25){
+            if areaAccessArray.contains(AreaAccess.amusementAreas) ||
+                areaAccessArray.contains(AreaAccess.kitchenAreas) ||
+                areaAccessArray.contains(AreaAccess.rideControlAreas) ||
+                areaAccessArray.contains(AreaAccess.maintenanceAreas) || rideAccessArray.contains(RideAccess.allRides) || contains(foodDiscount: 15, marchandiseDiscount: 25, discountAccessArray: discountAccessArray) {
                 return .granted(description: "Granted")
             }
            
             }
         case .manager:
                         if let areaAccessArray = self.access.areaAccess, let  rideAccessArray = self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
-                                if areaAccessArray[0] == AreaAccess.amusementAreas &&
-                                    areaAccessArray[1] == AreaAccess.kitchenAreas &&
-                                    areaAccessArray[2] == AreaAccess.rideControlAreas &&
-                                    areaAccessArray[3] == AreaAccess.maintenanceAreas &&
-                                    areaAccessArray[4] == AreaAccess.officeAreas && rideAccessArray[0] == RideAccess.allRides && (discountAccessArray[0] == DiscountAccess.onFood(percentage: 25)) && (discountAccessArray[1] == DiscountAccess.onMarchandise(percentage: 25)){
+                                if areaAccessArray.contains(AreaAccess.amusementAreas) ||
+                                    areaAccessArray.contains(AreaAccess.kitchenAreas) ||
+                                    areaAccessArray.contains(AreaAccess.rideControlAreas) ||
+                                    areaAccessArray.contains(AreaAccess.maintenanceAreas) ||
+                                    areaAccessArray.contains(AreaAccess.officeAreas) || rideAccessArray.contains(RideAccess.allRides) ||
+                                    contains(foodDiscount: 25, marchandiseDiscount: 25, discountAccessArray: discountAccessArray){
                                     return .granted(description: "Granted")
                                 }
                             
@@ -240,6 +242,32 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
     }
      return .denied(description: "Denied")
 }
+    
+    func contains(foodDiscount: Double, marchandiseDiscount: Double, discountAccessArray: [DiscountAccess]) -> Bool {
+        var  discountAccessArrayCopy: [DiscountAccess] = Array()
+        var index = 0
+        var contains = false
+        for item in discountAccessArray{
+            discountAccessArrayCopy.append(item)
+        }
+        
+        while index < discountAccessArrayCopy.count {
+            if let item = discountAccessArrayCopy.popLast(){
+                if item == DiscountAccess.onFood(percentage: foodDiscount) {
+                    contains = true
+                }
+                else {
+                    if item == DiscountAccess.onMarchandise(percentage: marchandiseDiscount){
+                        contains = true
+                    }
+                }
+                
+                }
+            
+            index += 1
+        }
+        return contains
+    }
 }
 
 class Guest: Accessable, Swipeable {
@@ -314,21 +342,21 @@ class Guest: Accessable, Swipeable {
         switch type {
         case .classic:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess {
-                if areaAccessArray[0] == AreaAccess.amusementAreas && rideAccessArray[0] == RideAccess.allRides {
+                if areaAccessArray.contains(AreaAccess.amusementAreas) || rideAccessArray.contains(RideAccess.allRides)  {
                     return .granted(description: "Granted")
                 }
                
             }
         case .vip:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
-                if areaAccessArray[0] == AreaAccess.amusementAreas && rideAccessArray[0] == RideAccess.allRides && rideAccessArray[1] == RideAccess.skipAllRideLines && discountAccessArray[0] == DiscountAccess.onFood(percentage: 10) && discountAccessArray[1] == DiscountAccess.onMarchandise(percentage: 20){
+                if areaAccessArray.contains(AreaAccess.amusementAreas) || rideAccessArray.contains(RideAccess.allRides) || rideAccessArray.contains(RideAccess.skipAllRideLines) || contains(foodDiscount: 10, marchandiseDiscount: 20, discountAccessArray: discountAccessArray) {
                     return .granted(description: "Granted")
                 }
               
             }
         case .freeChild:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess {
-                if areaAccessArray[0] == AreaAccess.amusementAreas && rideAccessArray[0] == RideAccess.allRides {
+                if areaAccessArray.contains(AreaAccess.amusementAreas) || rideAccessArray.contains(RideAccess.allRides) {
                     return .granted(description: "Granted")
                 }
             
@@ -336,6 +364,33 @@ class Guest: Accessable, Swipeable {
     }
          return .denied(description: "Denied")
 }
+    
+    func contains(foodDiscount: Double, marchandiseDiscount: Double, discountAccessArray: [DiscountAccess]) -> Bool {
+        var  discountAccessArrayCopy: [DiscountAccess] = Array()
+        var index = 0
+        var contains = false
+        for item in discountAccessArray{
+            discountAccessArrayCopy.append(item)
+        }
+        
+        while index < discountAccessArrayCopy.count {
+            if let item = discountAccessArrayCopy.popLast(){
+                if item == DiscountAccess.onFood(percentage: foodDiscount) {
+                    contains = true
+                }
+                else {
+                    if item == DiscountAccess.onMarchandise(percentage: marchandiseDiscount){
+                        contains = true
+                    }
+                }
+                
+            }
+            
+            index += 1
+        }
+        return contains
+    }
+
 }
 
 // Protocols

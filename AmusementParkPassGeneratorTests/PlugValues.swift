@@ -61,18 +61,19 @@ struct PlugValues {
             // Uncomment ONE of the following lines in order to set the privileges of each type of entran to test swipe method
             
             // For Hourly Employee - Food Services
-            
+            /*
                 et.areaAccess = [.amusementAreas,.kitchenAreas]
                 et.rideAccess = [.allRides]
                 et.discountAccess = [.onFood(percentage: 15), .onMarchandise(percentage: 25)]
+            */
             
-            /*
+            ///*
              // For Hourly Employee - Ride Control Areas
              
                 et.areaAccess = [.amusementAreas,.rideControlAreas]
                 et.rideAccess = [.allRides]
                 et.discountAccess = [.onFood(percentage: 15), .onMarchandise(percentage: 25)]
-             */
+            // */
             
             /*
              // For Hourly Employee - Maintenance
