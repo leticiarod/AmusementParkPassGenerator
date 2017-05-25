@@ -271,14 +271,15 @@ class AmusementParkPassGeneratorTests: XCTestCase {
                 
                 let access = Access(areaAccess: PlugValues.entrantTest.areaAccess, rideAccess: PlugValues.entrantTest.rideAccess, discountAccess: PlugValues.entrantTest.discountAccess)
                 hourlyEmployee.access = access
-                let permission = hourlyEmployee.swipe()
+                hourlyEmployee.swipe()
+                let permission = hourlyEmployee.permission
                 
                 switch permission {
-                case .granted(let description, let message): XCTAssert(description == "Granted")
+                case .granted(let description, let message): XCTAssert(description == "Access Granted !")
                                                             if let message = message {
                                                                 print("\(description) \(message)")}
 
-                case .denied(let description, let message):  XCTAssert(description == "Denied")
+                case .denied(let description, let message):  XCTAssert(description == "Access Denied")
                                                             if let message = message {
                                                                 print("\(description) \(message)")}
                 }
@@ -297,13 +298,17 @@ class AmusementParkPassGeneratorTests: XCTestCase {
                 
                 let access = Access(areaAccess: PlugValues.entrantTest.areaAccess, rideAccess: PlugValues.entrantTest.rideAccess, discountAccess: PlugValues.entrantTest.discountAccess)
                 guest.access = access
-                let permission = guest.swipe()
+              //  guest.initialSwipe()
+                guest.swipe()
+                let permission = guest.permission
                 
                 switch permission {
-                case .granted(let description, let message): XCTAssert(description == "Granted")
-                                                print("\(description) \(String(describing: message))")
-                case .denied(let description, let message):  XCTAssert(description == "Denied")
-                                                print("\(description) \(String(describing: message))")
+                case .granted(let description, let message): XCTAssert(description == "Access Granted !")
+                                                             if let message = message {
+                                                                print("\(description) \(message)")}
+                case .denied(let description, let message):  XCTAssert(description == "Access Denied")
+                                                             if let message = message {
+                                                                print("\(description) \(message)")}
                 }
                 
             } catch let error {

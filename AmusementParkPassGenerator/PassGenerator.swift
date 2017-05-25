@@ -8,6 +8,12 @@
 
 import UIKit
 
+// Counter to set the timer
+var seconds = 5 //This variable will hold a starting value of seconds. It could be any amount above 0.
+
+var timer = Timer()
+var isTimerRunning = false //This will be used to make sure only one timer is created at a time.
+
 enum GuestType {
     case classic
     case vip
@@ -46,7 +52,7 @@ enum DiscountAccess {
     case onFood(percentage: Double)
     case onMarchandise(percentage: Double)
     
-    //
+    
     static func == (left: DiscountAccess, right: DiscountAccess) -> Bool {
         
         switch (left, right) {
@@ -75,13 +81,11 @@ enum EntrantDataError: Error {
     
 }
 
-//
+
 enum Permission {
     case granted(description: String, message: String?)
     case denied(description: String, message: String?)
 }
-
-//
 
 struct Access {
     var areaAccess: [AreaAccess]? = Array()
@@ -159,9 +163,11 @@ class Employee {
 
 class HourlyEmployee: Employee, Accessable, Swipeable {
     var access: Access
+    var permission: Permission
     
     override init(firstName: String, lastName: String, streetAddress:String, city:String, state: String, zipCode:String, socialSecurityNumber:String?, dateOfBirth: Date?, type: EmployeeType) throws {
         access = Access(areaAccess: [],rideAccess: [],discountAccess: [])
+        permission = .denied(description: "Access Denied", message: nil)
         try super.init(firstName: firstName, lastName: lastName, streetAddress: streetAddress, city: city, state: state, zipCode: zipCode, socialSecurityNumber: socialSecurityNumber, dateOfBirth: dateOfBirth, type: type)
         
         }
@@ -196,7 +202,7 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
         return self.access
     }
     
-    func swipe() -> Permission {
+    func swipe() {
         var message: String = ""
         if isBirthdayDay() {
             message = "Happy birthday \(firstName) !!"
@@ -206,7 +212,7 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
         case .foodServices:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
                 if areaAccessArray.contains(AreaAccess.amusementAreas) || areaAccessArray.contains(AreaAccess.kitchenAreas) || rideAccessArray.contains(RideAccess.allRides) || contains(foodDiscount: 15, marchandiseDiscount: 25, discountAccessArray: discountAccessArray) {
-                    return .granted(description: "Granted", message: message)
+                    self.permission = .granted(description: "Access Granted !", message: message)
                 }
                 
             }
@@ -216,7 +222,7 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
                                 areaAccessArray.contains(AreaAccess.rideControlAreas)  || rideAccessArray.contains(RideAccess.allRides) || contains(foodDiscount: 15, marchandiseDiscount: 25, discountAccessArray: discountAccessArray)
                 {
                     print("discountAccessArray \(discountAccessArray)")
-                                    return .granted(description: "Granted", message: message)
+                                    self.permission = .granted(description: "Access Granted !", message: message)
                 }
                 
             }
@@ -226,7 +232,7 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
                 areaAccessArray.contains(AreaAccess.kitchenAreas) ||
                 areaAccessArray.contains(AreaAccess.rideControlAreas) ||
                 areaAccessArray.contains(AreaAccess.maintenanceAreas) || rideAccessArray.contains(RideAccess.allRides) || contains(foodDiscount: 15, marchandiseDiscount: 25, discountAccessArray: discountAccessArray) {
-                return .granted(description: "Granted", message: message)
+                self.permission = .granted(description: "Access Granted !", message: message)
             }
            
             }
@@ -238,13 +244,12 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
                                     areaAccessArray.contains(AreaAccess.maintenanceAreas) ||
                                     areaAccessArray.contains(AreaAccess.officeAreas) || rideAccessArray.contains(RideAccess.allRides) ||
                                     contains(foodDiscount: 25, marchandiseDiscount: 25, discountAccessArray: discountAccessArray){
-                                    return .granted(description: "Granted", message: message)
+                                    self.permission = .granted(description: "Access Granted !", message: message)
                                 }
                             
             }
        
     }
-     return .denied(description: "Denied", message: message)
 }
     
     func contains(foodDiscount: Double, marchandiseDiscount: Double, discountAccessArray: [DiscountAccess]) -> Bool {
@@ -310,6 +315,21 @@ class Guest: Accessable, Swipeable {
     let socialSecurityNumber: String?
     let dateOfBirth: Date?
     let type: GuestType
+    var permission: Permission
+    
+    init(){
+        self.firstName = nil
+        self.lastName = nil
+        self.streetAddress = nil
+        self.city = nil
+        self.state = nil
+        self.zipCode = nil
+        self.socialSecurityNumber = nil
+        self.dateOfBirth = nil
+        self.type = .classic
+        access = Access(areaAccess: [],rideAccess: [],discountAccess: [])
+        permission = .denied(description: "Access Denied", message: "")
+    }
     
     init(firstName: String, lastName: String, streetAddress:String, city:String, state: String, zipCode:String, socialSecurityNumber:String, dateOfBirth: Date?, type: GuestType) throws {
         
@@ -340,6 +360,7 @@ class Guest: Accessable, Swipeable {
         self.dateOfBirth = dateOfBirth
         self.type = type
         access = Access(areaAccess: [],rideAccess: [],discountAccess: [])
+        permission = .denied(description: "Access Denied", message: "")
     }
     
     func generateAccessByEntrantType() -> Access {
@@ -364,14 +385,28 @@ class Guest: Accessable, Swipeable {
         return self.access
     }
     
-    func swipe() -> Permission {
+    func initialSwipe(){
+        // Run timer
+        if isTimerRunning == false {
+            isTimerRunning = true
+            swipe()
+            timer = Timer.scheduledTimer(timeInterval: 1, target:self, selector: (#selector(self.updateCounter)), userInfo: nil, repeats: true)
+        }
+        else {
+            print("You are not able to swipe, try again in a few seconds")
+        }
+        
+
+    }
+    
+    func swipe() {
         var message: String = ""
         if isBirthdayDay() {
             if let firstName = self.firstName {
-            message = "Happy birthday \(firstName) !!"
+            message = "Happy birthday \(firstName)!!"
             }
             else{
-                message = "Happy birthday !!"
+                message = "Happy birthday!!"
             }
         }
         
@@ -380,26 +415,25 @@ class Guest: Accessable, Swipeable {
         case .classic:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess {
                 if areaAccessArray.contains(AreaAccess.amusementAreas) || rideAccessArray.contains(RideAccess.allRides)  {
-                    return .granted(description: "Granted", message: message)
-                }
+                    self.permission = .granted(description: "Access Granted !", message: message)
+                    }
                
             }
         case .vip:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
                 if areaAccessArray.contains(AreaAccess.amusementAreas) || rideAccessArray.contains(RideAccess.allRides) || rideAccessArray.contains(RideAccess.skipAllRideLines) || contains(foodDiscount: 10, marchandiseDiscount: 20, discountAccessArray: discountAccessArray) {
-                    return .granted(description: "Granted", message: message)
+                    self.permission = .granted(description: "Access Granted !", message: message)
                 }
               
             }
         case .freeChild:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess {
                 if areaAccessArray.contains(AreaAccess.amusementAreas) || rideAccessArray.contains(RideAccess.allRides) {
-                    return .granted(description: "Granted", message: message)
+                    self.permission = .granted(description: "Access Granted !", message: message)
                 }
             
             }
     }
-         return .denied(description: "Denied", message: message)
 }
     
     func contains(foodDiscount: Double, marchandiseDiscount: Double, discountAccessArray: [DiscountAccess]) -> Bool {
@@ -448,6 +482,25 @@ class Guest: Accessable, Swipeable {
         // otherwise
         return false
     }
+    
+    // MARK: - Timer Methods
+    
+    func stopTimer(){
+        timer.invalidate()
+    }
+    
+    // update counter for Timer
+     @objc func updateCounter() {
+        if seconds < 1 { // if time out
+            timer.invalidate()
+            isTimerRunning = false
+            seconds = 5
+        } else {
+            seconds -= 1
+            print("Seconds \(seconds)")
+        }
+       
+    }
 
 }
 
@@ -460,9 +513,13 @@ protocol Accessable {
 }
 
 protocol Swipeable {
-    func swipe() -> Permission // meter esto en un protocolo para que tanto guest cpmo employees lo imlementen
+    func swipe()
     
 }
+
+
+
+
 
 
 
