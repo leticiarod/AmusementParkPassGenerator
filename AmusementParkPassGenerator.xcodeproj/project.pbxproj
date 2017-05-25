@@ -14,6 +14,7 @@
 		977A84391ED2768300CD2818 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 977A84371ED2768300CD2818 /* LaunchScreen.storyboard */; };
 		977A84441ED2768300CD2818 /* AmusementParkPassGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977A84431ED2768300CD2818 /* AmusementParkPassGeneratorTests.swift */; };
 		977A844F1ED4BABE00CD2818 /* PassGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977A844E1ED4BABE00CD2818 /* PassGenerator.swift */; };
+		977A84511ED6982100CD2818 /* PlugValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977A84501ED6982100CD2818 /* PlugValues.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		977A84431ED2768300CD2818 /* AmusementParkPassGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmusementParkPassGeneratorTests.swift; sourceTree = "<group>"; };
 		977A84451ED2768300CD2818 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		977A844E1ED4BABE00CD2818 /* PassGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PassGenerator.swift; sourceTree = "<group>"; };
+		977A84501ED6982100CD2818 /* PlugValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlugValues.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 			children = (
 				977A84431ED2768300CD2818 /* AmusementParkPassGeneratorTests.swift */,
 				977A84451ED2768300CD2818 /* Info.plist */,
+				977A84501ED6982100CD2818 /* PlugValues.swift */,
 			);
 			path = AmusementParkPassGeneratorTests;
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				977A84441ED2768300CD2818 /* AmusementParkPassGeneratorTests.swift in Sources */,
+				977A84511ED6982100CD2818 /* PlugValues.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +420,7 @@
 				977A844A1ED2768300CD2818 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		977A844B1ED2768300CD2818 /* Build configuration list for PBXNativeTarget "AmusementParkPassGeneratorTests" */ = {
 			isa = XCConfigurationList;
@@ -424,6 +429,7 @@
 				977A844D1ED2768300CD2818 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

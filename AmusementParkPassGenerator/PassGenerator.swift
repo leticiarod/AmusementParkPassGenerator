@@ -67,6 +67,12 @@ enum EntrantDataError: Error {
     case missingBirthday(description: String)
     case missingName(description: String)
     case missingLastName(description: String)
+    case missingStreetAddress(description: String)
+    case missingCity(description: String)
+    case missingState(description: String)
+    case missingZipCode(description: String)
+    case overFiveYearsOldError(description: String)
+    
 }
 
 //
@@ -78,9 +84,9 @@ enum Permission {
 //
 
 struct Access {
-    var areaAccess: [AreaAccess]? = Array() // ver de meter esto en un prtocolo tanto para que funcione tanto pata los empleados como para los guest
-    var rideAccess: [RideAccess]? = Array() // ver de meter esto en un prtocolo tanto para que funcione tanto pata los empleados como para los guest
-    var discountAccess: [DiscountAccess]? = Array() // ver de meter esto en un prtocolo tanto para que funcione tanto pata los empleados como para los guest
+    var areaAccess: [AreaAccess]? = Array()
+    var rideAccess: [RideAccess]? = Array()
+    var discountAccess: [DiscountAccess]? = Array()
     
     init(){
     }
@@ -101,13 +107,15 @@ class Employee {
     let city: String
     let state: String
     let zipCode: String
-    let socialSecurityNumber: String
-    let dateOfBirth: Date
+    let socialSecurityNumber: String?
+    let dateOfBirth: Date?
     let type: EmployeeType
     
-    init(firstName: String, lastName: String, streetAddress:String, city:String, state: String, zipCode:String, socialSecurityNumber:String, dateOfBirth: Date, type: EmployeeType) throws {
+    
+    
+    init(firstName: String, lastName: String, streetAddress:String, city:String, state: String, zipCode:String, socialSecurityNumber:String?, dateOfBirth: Date?, type: EmployeeType) throws {
         
-        if firstName == ""  {
+        if firstName == "" {
             throw EntrantDataError.missingName(description: "Employee name is required")
             
         }
@@ -117,7 +125,23 @@ class Employee {
             
         }
 
-        
+        if streetAddress == ""  {
+            throw EntrantDataError.missingStreetAddress(description: "Employee Street Address is required")
+            
+        }
+        if city == ""  {
+            throw EntrantDataError.missingCity(description: "Employee city is required")
+            
+        }
+        if state == ""  {
+            throw EntrantDataError.missingState(description: "Employee state is required")
+            
+        }
+        if zipCode == ""  {
+            throw EntrantDataError.missingZipCode(description: "Employee zipcode is required")
+            
+        }
+
         self.firstName = firstName
         self.lastName = lastName
         self.streetAddress = streetAddress
@@ -136,13 +160,13 @@ class Employee {
 class HourlyEmployee: Employee, Accessable, Swipeable {
     var access: Access
     
-    override init(firstName: String, lastName: String, streetAddress:String, city:String, state: String, zipCode:String, socialSecurityNumber:String, dateOfBirth: Date, type: EmployeeType) throws {
+    override init(firstName: String, lastName: String, streetAddress:String, city:String, state: String, zipCode:String, socialSecurityNumber:String?, dateOfBirth: Date?, type: EmployeeType) throws {
         access = Access(areaAccess: [],rideAccess: [],discountAccess: [])
         try super.init(firstName: firstName, lastName: lastName, streetAddress: streetAddress, city: city, state: state, zipCode: zipCode, socialSecurityNumber: socialSecurityNumber, dateOfBirth: dateOfBirth, type: type)
         
         }
  
-    func generateAccessByEntrantType() {
+    func generateAccessByEntrantType() -> Access {
         var areaAccessArray: [AreaAccess] = Array()
         var rideAccessArray: [RideAccess] = Array()
         var discountAccessArray: [DiscountAccess] = Array()
@@ -168,6 +192,8 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
         }
         
         access = Access(areaAccess: areaAccessArray, rideAccess: rideAccessArray, discountAccess: discountAccessArray)
+        
+        return self.access
     }
     
     func swipe() -> Permission {
@@ -182,7 +208,7 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
                 
             }
         case .rideServices:
-            if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
+            if let areaAccessArray = self.access.areaAccess, let  rideAccessArray = self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
             if areaAccessArray[0] == AreaAccess.amusementAreas &&
                                 areaAccessArray[1] == AreaAccess.rideControlAreas && rideAccessArray[0] == RideAccess.allRides && discountAccessArray[0] == DiscountAccess.onFood(percentage: 15) && discountAccessArray[1] == DiscountAccess.onMarchandise(percentage: 25){
                                     return .granted(description: "Granted")
@@ -241,9 +267,11 @@ class Guest: Accessable, Swipeable {
             let calendar = Calendar.current
              let yearnow = calendar.component(.year, from: date)
             let year = calendar.component(.year, from: dateOfBirth)
+            let kidAge = yearnow - year
             
-            
-
+            if kidAge > 5 {
+                throw EntrantDataError.overFiveYearsOldError(description: "Free child must be under 5 years old")
+            }
             
         }
         
@@ -259,7 +287,7 @@ class Guest: Accessable, Swipeable {
         access = Access(areaAccess: [],rideAccess: [],discountAccess: [])
     }
     
-    func generateAccessByEntrantType() {
+    func generateAccessByEntrantType() -> Access {
         var areaAccessArray: [AreaAccess] = Array()
         var rideAccessArray: [RideAccess] = Array()
         var discountAccessArray: [DiscountAccess] = Array()
@@ -277,6 +305,8 @@ class Guest: Accessable, Swipeable {
         }
         
         access = Access(areaAccess: areaAccessArray, rideAccess: rideAccessArray, discountAccess: discountAccessArray)
+        
+        return self.access
     }
     
     func swipe() -> Permission {
@@ -313,7 +343,7 @@ class Guest: Accessable, Swipeable {
 protocol Accessable {
     var access: Access {get set}
     
-    func generateAccessByEntrantType()
+    func generateAccessByEntrantType() -> Access
 }
 
 protocol Swipeable {
