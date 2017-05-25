@@ -77,8 +77,8 @@ enum EntrantDataError: Error {
 
 //
 enum Permission {
-    case granted(description: String)
-    case denied(description: String)
+    case granted(description: String, message: String?)
+    case denied(description: String, message: String?)
 }
 
 //
@@ -197,12 +197,16 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
     }
     
     func swipe() -> Permission {
+        var message: String = ""
+        if isBirthdayDay() {
+            message = "Happy birthday \(firstName) !!"
+        }
         
         switch type {
         case .foodServices:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
                 if areaAccessArray.contains(AreaAccess.amusementAreas) || areaAccessArray.contains(AreaAccess.kitchenAreas) || rideAccessArray.contains(RideAccess.allRides) || contains(foodDiscount: 15, marchandiseDiscount: 25, discountAccessArray: discountAccessArray) {
-                    return .granted(description: "Granted")
+                    return .granted(description: "Granted", message: message)
                 }
                 
             }
@@ -212,7 +216,7 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
                                 areaAccessArray.contains(AreaAccess.rideControlAreas)  || rideAccessArray.contains(RideAccess.allRides) || contains(foodDiscount: 15, marchandiseDiscount: 25, discountAccessArray: discountAccessArray)
                 {
                     print("discountAccessArray \(discountAccessArray)")
-                                    return .granted(description: "Granted")
+                                    return .granted(description: "Granted", message: message)
                 }
                 
             }
@@ -222,7 +226,7 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
                 areaAccessArray.contains(AreaAccess.kitchenAreas) ||
                 areaAccessArray.contains(AreaAccess.rideControlAreas) ||
                 areaAccessArray.contains(AreaAccess.maintenanceAreas) || rideAccessArray.contains(RideAccess.allRides) || contains(foodDiscount: 15, marchandiseDiscount: 25, discountAccessArray: discountAccessArray) {
-                return .granted(description: "Granted")
+                return .granted(description: "Granted", message: message)
             }
            
             }
@@ -234,13 +238,13 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
                                     areaAccessArray.contains(AreaAccess.maintenanceAreas) ||
                                     areaAccessArray.contains(AreaAccess.officeAreas) || rideAccessArray.contains(RideAccess.allRides) ||
                                     contains(foodDiscount: 25, marchandiseDiscount: 25, discountAccessArray: discountAccessArray){
-                                    return .granted(description: "Granted")
+                                    return .granted(description: "Granted", message: message)
                                 }
                             
             }
        
     }
-     return .denied(description: "Denied")
+     return .denied(description: "Denied", message: message)
 }
     
     func contains(foodDiscount: Double, marchandiseDiscount: Double, discountAccessArray: [DiscountAccess]) -> Bool {
@@ -268,6 +272,29 @@ class HourlyEmployee: Employee, Accessable, Swipeable {
         }
         return contains
     }
+    
+    func isBirthdayDay() -> Bool{
+        
+        let date = Date()
+        let calendar = Calendar.current
+        let currentDay = calendar.component(.day, from: date)
+        let currentMonth = calendar.component(.month, from: date)
+        
+        if let dateOfBirth = self.dateOfBirth{
+            let birthdayDay = calendar.component(.day, from: dateOfBirth)
+            let birthdayMonth = calendar.component(.month, from: dateOfBirth)
+            if currentDay == birthdayDay && currentMonth == birthdayMonth{
+                return true
+            }
+            else {
+                return false
+            }
+        }
+        // otherwise
+        return false
+    }
+
+
 }
 
 class Guest: Accessable, Swipeable {
@@ -291,11 +318,11 @@ class Guest: Accessable, Swipeable {
                 throw EntrantDataError.missingBirthday(description: "Date of birthday required")
             }
             
-           let date = Date()
+            let date = Date()
             let calendar = Calendar.current
-             let yearnow = calendar.component(.year, from: date)
-            let year = calendar.component(.year, from: dateOfBirth)
-            let kidAge = yearnow - year
+            let currentYear = calendar.component(.year, from: date)
+            let birthdayYear = calendar.component(.year, from: dateOfBirth)
+            let kidAge = currentYear - birthdayYear
             
             if kidAge > 5 {
                 throw EntrantDataError.overFiveYearsOldError(description: "Free child must be under 5 years old")
@@ -338,31 +365,41 @@ class Guest: Accessable, Swipeable {
     }
     
     func swipe() -> Permission {
+        var message: String = ""
+        if isBirthdayDay() {
+            if let firstName = self.firstName {
+            message = "Happy birthday \(firstName) !!"
+            }
+            else{
+                message = "Happy birthday !!"
+            }
+        }
+        
         
         switch type {
         case .classic:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess {
                 if areaAccessArray.contains(AreaAccess.amusementAreas) || rideAccessArray.contains(RideAccess.allRides)  {
-                    return .granted(description: "Granted")
+                    return .granted(description: "Granted", message: message)
                 }
                
             }
         case .vip:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess, let discountAccessArray = self.access.discountAccess{
                 if areaAccessArray.contains(AreaAccess.amusementAreas) || rideAccessArray.contains(RideAccess.allRides) || rideAccessArray.contains(RideAccess.skipAllRideLines) || contains(foodDiscount: 10, marchandiseDiscount: 20, discountAccessArray: discountAccessArray) {
-                    return .granted(description: "Granted")
+                    return .granted(description: "Granted", message: message)
                 }
               
             }
         case .freeChild:
             if let areaAccessArray = self.access.areaAccess, let  rideAccessArray =                                             self.access.rideAccess {
                 if areaAccessArray.contains(AreaAccess.amusementAreas) || rideAccessArray.contains(RideAccess.allRides) {
-                    return .granted(description: "Granted")
+                    return .granted(description: "Granted", message: message)
                 }
             
             }
     }
-         return .denied(description: "Denied")
+         return .denied(description: "Denied", message: message)
 }
     
     func contains(foodDiscount: Double, marchandiseDiscount: Double, discountAccessArray: [DiscountAccess]) -> Bool {
@@ -389,6 +426,27 @@ class Guest: Accessable, Swipeable {
             index += 1
         }
         return contains
+    }
+    
+    func isBirthdayDay() -> Bool{
+        
+        let date = Date()
+        let calendar = Calendar.current
+        let currentDay = calendar.component(.day, from: date)
+        let currentMonth = calendar.component(.month, from: date)
+        
+        if let dateOfBirth = self.dateOfBirth{
+            let birthdayDay = calendar.component(.day, from: dateOfBirth)
+            let birthdayMonth = calendar.component(.month, from: dateOfBirth)
+            if currentDay == birthdayDay && currentMonth == birthdayMonth{
+                return true
+            }
+            else {
+                return false
+            }
+        }
+        // otherwise
+        return false
     }
 
 }

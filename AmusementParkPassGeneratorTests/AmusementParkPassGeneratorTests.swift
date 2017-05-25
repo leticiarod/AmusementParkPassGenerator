@@ -274,10 +274,13 @@ class AmusementParkPassGeneratorTests: XCTestCase {
                 let permission = hourlyEmployee.swipe()
                 
                 switch permission {
-                case .granted(let description): XCTAssert(description == "Granted")
-                                                print("Access Granted")
-                case .denied(let description):  XCTAssert(description == "Denied")
-                                                print("Access Denied")
+                case .granted(let description, let message): XCTAssert(description == "Granted")
+                                                            if let message = message {
+                                                                print("\(description) \(message)")}
+
+                case .denied(let description, let message):  XCTAssert(description == "Denied")
+                                                            if let message = message {
+                                                                print("\(description) \(message)")}
                 }
                 
                 
@@ -297,10 +300,10 @@ class AmusementParkPassGeneratorTests: XCTestCase {
                 let permission = guest.swipe()
                 
                 switch permission {
-                case .granted(let description): XCTAssert(description == "Granted")
-                                                print("Access Granted")
-                case .denied(let description):  XCTAssert(description == "Denied")
-                                                print("Access Denied")
+                case .granted(let description, let message): XCTAssert(description == "Granted")
+                                                print("\(description) \(String(describing: message))")
+                case .denied(let description, let message):  XCTAssert(description == "Denied")
+                                                print("\(description) \(String(describing: message))")
                 }
                 
             } catch let error {
